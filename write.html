@@ -111,7 +111,7 @@ console.log("undos length",undos.length);
 function processSelectedText(clickedElement){
 	let action = clickedElement.innerHTML;
 	if (action!="Undo"){
-		if (undos.length>=3){ //3 levels of undo
+		if (undos.length>=316){ //316 levels of undo
 			undos.shift();
 			undos.push(textarea.value);
 		}
