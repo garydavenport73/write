@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write</title>
+    <style>
+		*{ box-sizing:border-box;
+			}
+		main{
+			width:320px;
+			background-color:lightblue;
+			display:flex;
+			flex-direction:column;
+			align-items:center;
+			padding-bottom:20px;
+			}
+			
+		nav{
+			width:80%;
+			}
+		#text-editor, #document-result{
+			width:90%;
+			overflow-wrap: break-word;
+			min-height:100px;
+			margin-top:10px;
+			margin-bottom:10px;
+			}
+			
+		#document-parent{
+			margin:0;
+			padding:0;
+			width:90%;
+			}
+		#document-result{
+			padding-top:1rem;
+			padding-bottom:1rem;
+			width:100%;
+			background-color:lightyellow;
+			}
+        /* ALREADY SET FOR PHONE*/
+        /* TABLET*/
+        @media only screen and (min-width : 600px) {
+			#main-write{
+				width:600px;
+			}
+        }
+        /*DESKTOP*/
+        @media only screen and (min-width: 900px){
+			#main-write{
+				width:900px;
+			}
+		} 
+    </style>
+</head>
+<body>
+	<main id="main-write">
+	<h1>Write</h1>
+	<h2>Document Settings</h2>
+	<nav>
+		<button onclick='processSelectedText(this);'>Mono</button>
+		<button onclick='processSelectedText(this);'>Serif</button>
+		<button onclick='processSelectedText(this);'>Sans Serif</button>
+		<button onclick='processSelectedText(this);'>Increase Font</button>
+		<button onclick='processSelectedText(this);'>Decrease Font</button>
+	</nav>
+	<nav>
+		<button onclick='processSelectedText(this);'>Decrease Margins</button>
+		<button onclick='processSelectedText(this);'>Increase Margins</button>
+		<button onclick='processSelectedText(this);'>Align Left</button>
+		<button onclick='processSelectedText(this);'>Align Center</button>
+		<button onclick='processSelectedText(this);'>Align Right</button>
+	</nav>
+	<h2>Alter Selections</h2>
+	<nav>
+		<button onclick='processSelectedText(this);'>Bold</button>
+		<button onclick='processSelectedText(this);'>Underline</button>
+		<button onclick='processSelectedText(this);'>Italic</button>
+	</nav>
+	<nav>
+		<button onclick='processSelectedText(this);'>Heading 1</button>
+		<button onclick='processSelectedText(this);'>Heading 2</button>
+		<button onclick='processSelectedText(this);'>Heading 3</button>
+		<button onclick='processSelectedText(this);'>Heading 4</button>
+		<button onclick='processSelectedText(this);'>Heading 5</button>
+		<button onclick='processSelectedText(this);'>Heading 6</button>
+		<button onclick='processSelectedText(this);'>Horizontal Rule</button>
+		<button onclick='processSelectedText(this);'>Paragraph</button>
+	</nav>
+	<nav>
+		<button onclick='processSelectedText(this);'>Undo</button>
+	</nav>
+	<textarea id="text-editor" oninput="updateResult();">Give it a try</textarea>
+    <div id="document-parent"><div id="document-result"></div></div>
+    <nav>
+		<button>Load</button>
+		<button>Save</button>
+		<button>Print</button>
+	</nav>
+</main>
+<script>
+let textarea = document.getElementById("text-editor");
+let documentDiv=document.getElementById('document-result');
+let remSize=1;
+let marginSize=2;
+let undos=[];
+console.log("undos length",undos.length);
+//undos.push(textarea.value);
+
+function processSelectedText(clickedElement){
+	let action = clickedElement.innerHTML;
+	if (action!="Undo"){
+		if (undos.length>=3){ //3 levels of undo
+			undos.shift();
+			undos.push(textarea.value);
+		}
+		else{
+			undos.push(textarea.value);	
+		}
+	}
+	
+	if (action==="Align Left"){
+		documentDiv.style.textAlign="left";
+		}
+	else if (action==="Align Center"){
+		documentDiv.style.textAlign="center";
+		}
+	else if (action==="Align Right"){
+		documentDiv.style.textAlign="right";
+		}
+	else if (action==="Align Right"){
+		documentDiv.style.textAlign="right";
+		}
+	else if (action==="Mono"){
+		documentDiv.style.fontFamily="'Courier New', Courier, monospace";
+		}
+	else if (action==="Serif"){
+		documentDiv.style.fontFamily="Georgia, 'Times New Roman', Garamond, Times, serif";
+		}
+	else if (action==="Sans Serif"){
+		documentDiv.style.fontFamily="Arial, Verdana, Helvetica, Tahoma, sans-serif";
+		}
+	else if (action==="Increase Font"){
+		remSize = remSize + .2;
+		documentDiv.style.fontSize=remSize.toString()+"rem";
+		}
+	else if (action==="Decrease Font"){
+		remSize = remSize - .2;
+		documentDiv.style.fontSize=remSize.toString()+"rem";
+		}
+	else if (action==="Increase Margins"){
+		marginSize = marginSize + 1;
+		if (marginSize>8){marginSize=8;}
+		documentDiv.style.paddingLeft=marginSize.toString()+"rem";
+		documentDiv.style.paddingRight=marginSize.toString()+"rem";
+		
+		}
+	else if (action==="Decrease Margins"){
+		marginSize = marginSize - 1;
+		if (marginSize<0){marginSize=0;}
+		documentDiv.style.paddingLeft=marginSize.toString()+"rem";
+		documentDiv.style.paddingRight=marginSize.toString()+"rem";
+		}
+	else if (action==="Undo"){
+		//console.log("undo called");
+		console.log(undos);
+		if (undos.length>0){
+			let thisText=undos.pop();
+			//console.log(undos);
+			//console.log(thisText);
+			textarea.value=thisText;
+			updateResult();
+			}
+;
+		}	
+	//alert(action);
+
+	let len = textarea.value.length;
+	let start = textarea.selectionStart;
+	let end = textarea.selectionEnd;
+	let sel = textarea.value.substring(start, end);
+
+	// This is the selected text and alert it
+	//alert(sel);
+
+	let replace = sel;
+
+	if (action==="Bold"){
+		replace = '<b>' + sel + '</b>';
+		}
+	else if (action==="Underline"){
+		replace = '<u>' + sel + '</u>';
+		}
+	else if (action==="Italic"){
+		replace = '<em>' + sel + '</em>';
+		}
+	else if (action==="Heading 1"){
+		replace = '<h1>' + sel + '</h1>';
+		}
+	else if (action==="Heading 2"){
+		replace = '<h2>' + sel + '</h2>';
+		}
+	else if (action==="Heading 3"){
+		replace = '<h3>' + sel + '</h3>';
+		}
+	else if (action==="Heading 4"){
+		replace = '<h4>' + sel + '</h4>';
+		}
+	else if (action==="Heading 5"){
+		replace = '<h5>' + sel + '</h5>';
+		}
+	else if (action==="Heading 6"){
+		replace = '<h6>' + sel + '</h6>';
+		}
+	else if (action==="Paragraph"){
+		replace = '<p>' + sel + '</p>';
+		}		
+	else if (action==="Horizontal Rule"){
+		replace = '<hr>' + sel;
+		}
+	// Here we are replacing the selected text with this one
+	textarea.value =  textarea.value.substring(0,start) + replace + textarea.value.substring(end,len);
+	updateResult();
+}
+
+
+function updateResult(){
+	let currentContents=document.getElementById('text-editor').value;
+	document.getElementById('document-result').innerHTML=currentContents.replaceAll('\n','<br>');
+	}
+updateResult();
+
+documentDiv.style.fontSize=remSize+"rem";
+documentDiv.style.paddingLeft=marginSize+"rem";
+documentDiv.style.paddingRight=marginSize+"rem";
+</script>
+</body>
+</html>
