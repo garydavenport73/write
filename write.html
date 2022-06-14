@@ -38,6 +38,14 @@
 			padding-bottom:1rem;
 			width:100%;
 			background-color:lightyellow;
+			
+
+      white-space: pre-wrap;
+      
+  			
+			
+			
+			
 			}
         /* ALREADY SET FOR PHONE*/
         /* TABLET*/
@@ -106,7 +114,7 @@ let remSize=1;
 let marginSize=2;
 let undos=[];
 console.log("undos length",undos.length);
-//undos.push(textarea.value);
+undos.push(textarea.value);
 
 function processSelectedText(clickedElement){
 	let action = clickedElement.innerHTML;
@@ -165,11 +173,19 @@ function processSelectedText(clickedElement){
 	else if (action==="Undo"){
 		//console.log("undo called");
 		console.log(undos);
-		if (undos.length>0){
+		if (undos.length>1){
 			let thisText=undos.pop();
 			//console.log(undos);
 			//console.log(thisText);
 			textarea.value=thisText;
+			updateResult();
+			}
+		else if (undos.length===1){ //don't go past initial entry
+			textarea.value=undos[0];
+			updateResult()
+			}
+		else if (undos.length===0){ //should never reach this case;
+			textarea.value="";
 			updateResult();
 			}
 ;
@@ -224,9 +240,32 @@ function processSelectedText(clickedElement){
 	updateResult();
 }
 
+document.getElementById('text-editor').addEventListener('keydown', function(e) {
+//https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
+//https://stackoverflow.com/users/819732/kasdega
+  if (e.key == 'Tab') {
+    e.preventDefault();
+    let start = this.selectionStart;
+    let end = this.selectionEnd;
+
+    // set textarea value to: text before caret + tab + text after caret
+    this.value = this.value.substring(0, start) +
+      //"    " + this.value.substring(end); using 4 spaces
+      "\t" + this.value.substring(end);
+
+    // put caret at right position again
+    this.selectionStart =
+      //this.selectionEnd = start + 4; using 4 spaces
+      this.selectionEnd = start + 1;
+      updateResult();
+  }
+});
+
 
 function updateResult(){
 	let currentContents=document.getElementById('text-editor').value;
+	console.dir(document.getElementById('text-editor'));
+	console.log(currentContents);
 	document.getElementById('document-result').innerHTML=currentContents.replaceAll('\n','<br>');
 	}
 updateResult();
