@@ -171,7 +171,8 @@ ____________________
             <button>Load</button>
             <button>Save</button>
             <!--<button onclick="serializeParent();"> Serialize Parent</button>-->
-            <button>Export</button>
+            <button onclick="saveStringToTextFile(serializeParent(),'write'+getTodaysDate(),'.html')">Export</button>
+         
             <button onclick="printDiv();//window.print()">Print</button>
         </nav>
         <div id="document-parent">
@@ -360,6 +361,66 @@ ____________________
             console.log(htmlPage);
             return htmlPage;
         }
+        
+        		////////////////////////////////////////////
+		//Save related functions, often used with date functions below
+        function save() {
+            basename = "write" + getTodaysDate();
+            saveStringToTextFile(str, basename, ".txt");
+        }
+
+        function saveStringToTextFile(str1, basename = "myfile", fileType = ".txt") {
+            let filename = basename + fileType;
+            let blobVersionOfText = new Blob([str1], {
+                type: "text/plain"
+            });
+            let urlToBlob = window.URL.createObjectURL(blobVersionOfText);
+            let downloadLink = document.createElement("a");
+            downloadLink.style.display = "none";
+            downloadLink.download = filename;
+            downloadLink.href = urlToBlob;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            downloadLink.parentElement.removeChild(downloadLink);
+        }
+
+        //Date related functions for convience, uses same format as input type="date"
+        function getTodaysDate() {
+            let now = new Date();
+            let day = ("0" + now.getDate()).slice(-2);
+            let month = ("0" + (now.getMonth() + 1)).slice(-2);
+            let today = now.getFullYear() + "-" + month + "-" + day;
+            return today;
+        }
+
+        function getFirstDayOfThisMonthDate() {
+            let now = new Date();
+            let day = "01";
+            let month = ("0" + (now.getMonth() + 1)).slice(-2);
+            return now.getFullYear() + "-" + month + "-" + day;
+        }
+
+        function getLastDayOfThisMonthDate() {
+            let now = new Date();
+            let day = daysInThisMonth().toString();
+            day = "0" + day;
+            day = day.slice(-2);
+            let month = ("0" + (now.getMonth() + 1)).slice(-2);
+            return now.getFullYear() + "-" + month + "-" + day;
+        }
+
+        function daysInSomeMonth(someMonth, someYear) { //use jan month is 0
+            return new Date(someYear, someMonth + 1, 0).getDate();
+        }
+
+        function daysInThisMonth() {
+            thisDate = new Date();
+            thisMonth = thisDate.getMonth();
+            thisYear = thisDate.getYear();
+            return daysInSomeMonth(thisMonth, thisYear);
+        }
+        
+        /////////////////////////////////////////////////
     </script>
 </body>
 
