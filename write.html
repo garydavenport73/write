@@ -36,6 +36,7 @@
             margin: 0;
             padding: 0;
             width: 90%;
+            background-color: lightyellow;
         }
         
         #document-result {
@@ -45,7 +46,7 @@
             margin-top: 10px;
             margin-bottom: 10px;
             padding-bottom: 1rem;
-            width: 100%;
+            width: auto;
             background-color: lightyellow;
             white-space: pre-wrap;
         }
@@ -168,8 +169,8 @@ Well that's all,
 ____________________
 <em>Gary Davenport</em></textarea>
         <nav>
-            <button>Load</button>
-            <button>Save</button>
+            <button onclick="load();">Load</button>
+            <button onclick="dataToJSON();">Save</button>
             <!--<button onclick="serializeParent();"> Serialize Parent</button>-->
             <button onclick="saveStringToTextFile(serializeParent(),'write'+getTodaysDate(),'.html')">Export</button>
          
@@ -181,6 +182,7 @@ ____________________
 
     </main>
     <script>
+		let baseFilename="";
         let textarea = document.getElementById("text-editor");
         let documentDiv = document.getElementById('document-result');
         let remSize = 1;
@@ -188,6 +190,61 @@ ____________________
         let undos = [];
         console.log("undos length", undos.length);
         undos.push(textarea.value);
+        
+        function dataToJSON(){
+			updateResult();
+			data={}
+			data["text"]=textarea.value;
+			data["textAlign"]=documentDiv.style.textAlign;
+			data["fontFamily"]=documentDiv.style.fontFamily;
+			data["fontSize"]=documentDiv.style.fontSize;
+			data["marginSize"]=documentDiv.style.marginLeft;
+			data["spellCheck"]=textarea.spellcheck;
+			if (baseFilename===""){
+				baseFilename="write"+getTodaysDate();
+				};
+			let saveContents = JSON.stringify(data);
+			saveStringToTextFile(saveContents, baseFilename, ".json");
+			}
+			
+		function load(){
+            let fileContents = "";
+            let inputTypeIsFile = document.createElement('input');
+            inputTypeIsFile.type = "file";
+            inputTypeIsFile.accept = ".json";
+            inputTypeIsFile.addEventListener("change", function() {
+                let inputFile = inputTypeIsFile.files[0];
+                let fileReader = new FileReader();
+                fileReader.onload = function(fileLoadedEvent) {
+                    fileContents = fileLoadedEvent.target.result;
+                   
+                                   console.log(inputFile);
+				if (inputFile["name"].slice(-5)===".json"){
+					//alert("it's json!");
+					baseFilename=inputFile["name"].slice(0,-5);
+					//alert("basefilename: " + baseFilename);
+				} 
+      
+						
+					let loadedData=JSON.parse(fileContents);
+					textarea.value=loadedData["text"];
+					documentDiv.style.textAlign=loadedData["textAlign"];
+					documentDiv.style.fontFamily=loadedData["fontFamily"];
+					documentDiv.style.fontSize=loadedData["fontSize"];
+					documentDiv.style.marginLeft=loadedData["marginSize"];
+					textarea.spellcheck=loadedData["spellCheck"];
+                    updateResult();
+                    remSize = parseInt(loadedData["fontSize"].split("rem")[0]);
+					marginSize = parseInt(loadedData["marginSize"].split("rem")[0]);;
+           
+                };
+
+                fileReader.readAsText(inputFile, "UTF-8");
+            });
+            inputTypeIsFile.click();
+        }
+			
+			
 
         function processSelectedText(clickedElement) {
             let action = clickedElement.innerHTML;
@@ -225,16 +282,16 @@ ____________________
                 if (marginSize > 20) {
                     marginSize = 20;
                 }
-                documentDiv.style.paddingLeft = marginSize.toString() + "rem";
-                documentDiv.style.paddingRight = marginSize.toString() + "rem";
+                documentDiv.style.marginLeft = marginSize.toString() + "rem";
+                documentDiv.style.marginRight = marginSize.toString() + "rem";
 
             } else if (action === "Decrease Margins") {
                 marginSize = marginSize - 1;
                 if (marginSize < 0) {
                     marginSize = 0;
                 }
-                documentDiv.style.paddingLeft = marginSize.toString() + "rem";
-                documentDiv.style.paddingRight = marginSize.toString() + "rem";
+                documentDiv.style.marginLeft = marginSize.toString() + "rem";
+                documentDiv.style.marginRight = marginSize.toString() + "rem";
             } else if (action === "Undo") {
                 //console.log("undo called");
                 console.log(undos);
@@ -326,14 +383,14 @@ ____________________
         function updateResult() {
             let currentContents = document.getElementById('text-editor').value;
             console.dir(document.getElementById('text-editor'));
-            console.log(currentContents);
+            //console.log(currentContents);
             document.getElementById('document-result').innerHTML = currentContents.replaceAll('\n', '<br>');
         }
         updateResult();
 
         documentDiv.style.fontSize = remSize + "rem";
-        documentDiv.style.paddingLeft = marginSize + "rem";
-        documentDiv.style.paddingRight = marginSize + "rem";
+        documentDiv.style.marginLeft = marginSize + "rem";
+        documentDiv.style.marginRight = marginSize + "rem";
 
 
         //Script to print the content of a div
@@ -346,12 +403,12 @@ ____________________
         }
 
         let styleElement = document.getElementsByTagName('style')[0];
-        console.log(styleElement.innerHTML);
+        //console.log(styleElement.innerHTML);
 
         function serializeParent() {
             let boilerPlate1 = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=edge'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title></title><style>";
             let styleElementContent = document.getElementsByTagName('style')[0].innerHTML;
-            let extraStyle = "#document-result{background-color:white;}";
+            let extraStyle = "#document-result,#document-parent{background-color:white;}";
             let boilerPlate2 = "</style></head><body>"
             let boilerPlate3 = "</body></html>";
             let s = new XMLSerializer();
@@ -362,10 +419,12 @@ ____________________
             return htmlPage;
         }
         
+
+        
         		////////////////////////////////////////////
 		//Save related functions, often used with date functions below
         function save() {
-            basename = "write" + getTodaysDate();
+            let basename = "write" + getTodaysDate();
             saveStringToTextFile(str, basename, ".txt");
         }
 
