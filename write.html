@@ -1,278 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Write</title>
     <style>
-		*{ box-sizing:border-box;
-			}
-		main{
-			width:320px;
-			background-color:lightblue;
-			display:flex;
-			flex-direction:column;
-			align-items:center;
-			padding-bottom:20px;
-			}
-			
-		nav{
-			width:80%;
-			}
-		#text-editor, #document-result{
-			width:90%;
-			overflow-wrap: break-word;
-			min-height:100px;
-			margin-top:10px;
-			margin-bottom:10px;
-			}
-			
-		#document-parent{
-			margin:0;
-			padding:0;
-			width:90%;
-			}
-		#document-result{
-			padding-top:1rem;
-			padding-bottom:1rem;
-			width:100%;
-			background-color:lightyellow;
-			
-
-      white-space: pre-wrap;
-      
-  			
-			
-			
-			
-			}
+        * {
+            box-sizing: border-box;
+        }
+        
+        main {
+            width: 320px;
+            background-color: lightblue;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+        
+        nav {
+            width: 80%;
+        }
+        
+        #text-editor {
+            width: 90%;
+            overflow-wrap: break-word;
+            min-height: 100px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        #document-parent {
+            margin: 0;
+            padding: 0;
+            width: 90%;
+        }
+        
+        #document-result {
+            overflow-wrap: break-word;
+            min-height: 100px;
+            padding-top: 1rem;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 1rem;
+            width: 100%;
+            background-color: lightyellow;
+            white-space: pre-wrap;
+        }
         /* ALREADY SET FOR PHONE*/
         /* TABLET*/
-        @media only screen and (min-width : 600px) {
-			#main-write{
-				width:600px;
-			}
+        
+        @media only screen and (min-width: 600px) {
+            #main-write {
+                width: 600px;
+            }
         }
         /*DESKTOP*/
-        @media only screen and (min-width: 900px){
-			#main-write{
-				width:900px;
-			}
-		} 
+        
+        @media only screen and (min-width: 900px) {
+            #main-write {
+                width: 900px;
+            }
+        }
+        
+        @media print {
+            html,
+            body {
+                height: 99%;
+            }
+            html {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            main>* {
+                display: none;
+            }
+            main {
+                width: 100%;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            #document-parent {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                display: block;
+                /*border: 1px solid black;*/
+            }
+            #document-result {
+                display: block;
+                margin: 0;
+                /*border:1px solid blue;*/
+            }
+        }
     </style>
 </head>
+
 <body>
-	<main id="main-write">
-	<h1>Write</h1>
-	<h2>Document Settings</h2>
-	<nav>
-		<button onclick='processSelectedText(this);'>Mono</button>
-		<button onclick='processSelectedText(this);'>Serif</button>
-		<button onclick='processSelectedText(this);'>Sans Serif</button>
-		<button onclick='processSelectedText(this);'>Increase Font</button>
-		<button onclick='processSelectedText(this);'>Decrease Font</button>
-	</nav>
-	<nav>
-		<button onclick='processSelectedText(this);'>Decrease Margins</button>
-		<button onclick='processSelectedText(this);'>Increase Margins</button>
-		<button onclick='processSelectedText(this);'>Align Left</button>
-		<button onclick='processSelectedText(this);'>Align Center</button>
-		<button onclick='processSelectedText(this);'>Align Right</button>
-	</nav>
-	<h2>Alter Selections</h2>
-	<nav>
-		<button onclick='processSelectedText(this);'>Bold</button>
-		<button onclick='processSelectedText(this);'>Underline</button>
-		<button onclick='processSelectedText(this);'>Italic</button>
-	</nav>
-	<nav>
-		<button onclick='processSelectedText(this);'>Heading 1</button>
-		<button onclick='processSelectedText(this);'>Heading 2</button>
-		<button onclick='processSelectedText(this);'>Heading 3</button>
-		<button onclick='processSelectedText(this);'>Heading 4</button>
-		<button onclick='processSelectedText(this);'>Heading 5</button>
-		<button onclick='processSelectedText(this);'>Heading 6</button>
-		<button onclick='processSelectedText(this);'>Horizontal Rule</button>
-		<button onclick='processSelectedText(this);'>Paragraph</button>
-	</nav>
-	<nav>
-		<button onclick='processSelectedText(this);'>Undo</button>
-	</nav>
-	<textarea id="text-editor" oninput="updateResult();">Give it a try</textarea>
-    <div id="document-parent"><div id="document-result"></div></div>
-    <nav>
-		<button>Load</button>
-		<button>Save</button>
-		<button>Print</button>
-	</nav>
-</main>
-<script>
-let textarea = document.getElementById("text-editor");
-let documentDiv=document.getElementById('document-result');
-let remSize=1;
-let marginSize=2;
-let undos=[];
-console.log("undos length",undos.length);
-undos.push(textarea.value);
+    <main id="main-write">
+        <h1>Write</h1>
+        <h2>Document Settings</h2>
+        <nav>
+			<span>Fonts</span>
+            <button onclick='processSelectedText(this);'>Mono</button>
+            <button onclick='processSelectedText(this);'>Serif</button>
+            <button onclick='processSelectedText(this);'>Sans Serif</button>
+            <button onclick='processSelectedText(this);'>Increase Font</button>
+            <button onclick='processSelectedText(this);'>Decrease Font</button>
+        </nav>
+        <nav>
+			<span>Format</span>
+            <button onclick='processSelectedText(this);'>Decrease Margins</button>
+            <button onclick='processSelectedText(this);'>Increase Margins</button>
+            <button onclick='processSelectedText(this);'>Align Left</button>
+            <button onclick='processSelectedText(this);'>Align Center</button>
+            <button onclick='processSelectedText(this);'>Align Right</button>
+        </nav>
+        <h2>Edit Selections</h2>
+        <nav>
+			<span>Font Style</span>
+            <button onclick='processSelectedText(this);'>Bold</button>
+            <button onclick='processSelectedText(this);'>Underline</button>
+            <button onclick='processSelectedText(this);'>Italic</button>
+        </nav>
+        <nav><span>Headings</span>
+            <button onclick='processSelectedText(this);'>Heading 1</button>
+            <button onclick='processSelectedText(this);'>Heading 2</button>
+            <button onclick='processSelectedText(this);'>Heading 3</button>
+            <button onclick='processSelectedText(this);'>Heading 4</button>
+            <button onclick='processSelectedText(this);'>Heading 5</button>
+            <button onclick='processSelectedText(this);'>Heading 6</button>
+        </nav>
+        <nav>
+            <button onclick='processSelectedText(this);'>Horizontal Rule</button>
+            <button onclick='processSelectedText(this);'>Bullet</button>
+            <button onclick='processSelectedText(this);'>Paragraph</button>
+        </nav>
+        <nav>
+            <button onclick='processSelectedText(this);'>Undo</button>
+            <button onclick='processSelectedText(this);'>Spell Check</button>     
+        </nav>
+        <textarea id="text-editor" spellcheck="false" oninput="updateResult();"><h1>My first document.</h1>
+<p>I would like thanks <em>everyone</em> who made this document possible.</p>
+If it wasn't for everyone, I would not have been able to do this</b>.
+<p>Or <u>this.</u></p>
+<hr>So let's all continue to think of the best.<hr>
+The Headings seem to work.
+<h1>Here is an H1 for example.</h1><h2>an h2</h2><h3>an h3</h3><h4>an h4</h4><h5>an h5</h5>and<h6>an h6</h6>Here is a list
+	&bullet; the first thing
+	&bullet; the second thing
+	&bullet; and the third
+	&bullet; the fourth
+	&bullet; and fifth
 
-function processSelectedText(clickedElement){
-	let action = clickedElement.innerHTML;
-	if (action!="Undo"){
-		if (undos.length>=316){ //316 levels of undo
-			undos.shift();
-			undos.push(textarea.value);
-		}
-		else{
-			undos.push(textarea.value);	
-		}
-	}
-	
-	if (action==="Align Left"){
-		documentDiv.style.textAlign="left";
-		}
-	else if (action==="Align Center"){
-		documentDiv.style.textAlign="center";
-		}
-	else if (action==="Align Right"){
-		documentDiv.style.textAlign="right";
-		}
-	else if (action==="Align Right"){
-		documentDiv.style.textAlign="right";
-		}
-	else if (action==="Mono"){
-		documentDiv.style.fontFamily="'Courier New', Courier, monospace";
-		}
-	else if (action==="Serif"){
-		documentDiv.style.fontFamily="Georgia, 'Times New Roman', Garamond, Times, serif";
-		}
-	else if (action==="Sans Serif"){
-		documentDiv.style.fontFamily="Arial, Verdana, Helvetica, Tahoma, sans-serif";
-		}
-	else if (action==="Increase Font"){
-		remSize = remSize + .2;
-		documentDiv.style.fontSize=remSize.toString()+"rem";
-		}
-	else if (action==="Decrease Font"){
-		remSize = remSize - .2;
-		documentDiv.style.fontSize=remSize.toString()+"rem";
-		}
-	else if (action==="Increase Margins"){
-		marginSize = marginSize + 1;
-		if (marginSize>8){marginSize=8;}
-		documentDiv.style.paddingLeft=marginSize.toString()+"rem";
-		documentDiv.style.paddingRight=marginSize.toString()+"rem";
-		
-		}
-	else if (action==="Decrease Margins"){
-		marginSize = marginSize - 1;
-		if (marginSize<0){marginSize=0;}
-		documentDiv.style.paddingLeft=marginSize.toString()+"rem";
-		documentDiv.style.paddingRight=marginSize.toString()+"rem";
-		}
-	else if (action==="Undo"){
-		//console.log("undo called");
-		console.log(undos);
-		if (undos.length>1){
-			let thisText=undos.pop();
-			//console.log(undos);
-			//console.log(thisText);
-			textarea.value=thisText;
-			updateResult();
-			}
-		else if (undos.length===1){ //don't go past initial entry
-			textarea.value=undos[0];
-			updateResult()
-			}
-		else if (undos.length===0){ //should never reach this case;
-			textarea.value="";
-			updateResult();
-			}
-;
-		}	
-	//alert(action);
+	1) 	hello
+	2) 	again
+	3) 	and then some
+	...)
+	10) 	see what its like
 
-	let len = textarea.value.length;
-	let start = textarea.selectionStart;
-	let end = textarea.selectionEnd;
-	let sel = textarea.value.substring(start, end);
+Well that's all,
 
-	// This is the selected text and alert it
-	//alert(sel);
+____________________
+<em>Gary Davenport</em></textarea>
+        <nav>
+            <button>Load</button>
+            <button>Save</button>
+            <!--<button onclick="serializeParent();"> Serialize Parent</button>-->
+            <button>Export</button>
+            <button onclick="printDiv();//window.print()">Print</button>
+        </nav>
+        <div id="document-parent">
+            <div id="document-result"></div>
+        </div>
 
-	let replace = sel;
+    </main>
+    <script>
+        let textarea = document.getElementById("text-editor");
+        let documentDiv = document.getElementById('document-result');
+        let remSize = 1;
+        let marginSize = 2;
+        let undos = [];
+        console.log("undos length", undos.length);
+        undos.push(textarea.value);
 
-	if (action==="Bold"){
-		replace = '<b>' + sel + '</b>';
-		}
-	else if (action==="Underline"){
-		replace = '<u>' + sel + '</u>';
-		}
-	else if (action==="Italic"){
-		replace = '<em>' + sel + '</em>';
-		}
-	else if (action==="Heading 1"){
-		replace = '<h1>' + sel + '</h1>';
-		}
-	else if (action==="Heading 2"){
-		replace = '<h2>' + sel + '</h2>';
-		}
-	else if (action==="Heading 3"){
-		replace = '<h3>' + sel + '</h3>';
-		}
-	else if (action==="Heading 4"){
-		replace = '<h4>' + sel + '</h4>';
-		}
-	else if (action==="Heading 5"){
-		replace = '<h5>' + sel + '</h5>';
-		}
-	else if (action==="Heading 6"){
-		replace = '<h6>' + sel + '</h6>';
-		}
-	else if (action==="Paragraph"){
-		replace = '<p>' + sel + '</p>';
-		}		
-	else if (action==="Horizontal Rule"){
-		replace = '<hr>' + sel;
-		}
-	// Here we are replacing the selected text with this one
-	textarea.value =  textarea.value.substring(0,start) + replace + textarea.value.substring(end,len);
-	updateResult();
-}
+        function processSelectedText(clickedElement) {
+            let action = clickedElement.innerHTML;
+            if (action != "Undo") {
+                if (undos.length >= 316) { //316 levels of undo
+                    undos.shift();
+                    undos.push(textarea.value);
+                } else {
+                    undos.push(textarea.value);
+                }
+            }
 
-document.getElementById('text-editor').addEventListener('keydown', function(e) {
-//https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
-//https://stackoverflow.com/users/819732/kasdega
-  if (e.key == 'Tab') {
-    e.preventDefault();
-    let start = this.selectionStart;
-    let end = this.selectionEnd;
+            if (action === "Align Left") {
+                documentDiv.style.textAlign = "left";
+            } else if (action === "Align Center") {
+                documentDiv.style.textAlign = "center";
+            } else if (action === "Align Right") {
+                documentDiv.style.textAlign = "right";
+            } else if (action === "Align Right") {
+                documentDiv.style.textAlign = "right";
+            } else if (action === "Mono") {
+                documentDiv.style.fontFamily = "'Courier New', Courier, monospace";
+            } else if (action === "Serif") {
+                documentDiv.style.fontFamily = "Georgia, 'Times New Roman', Garamond, Times, serif";
+            } else if (action === "Sans Serif") {
+                documentDiv.style.fontFamily = "Arial, Verdana, Helvetica, Tahoma, sans-serif";
+            } else if (action === "Increase Font") {
+                remSize = remSize + .2;
+                documentDiv.style.fontSize = remSize.toString() + "rem";
+            } else if (action === "Decrease Font") {
+                remSize = remSize - .2;
+                documentDiv.style.fontSize = remSize.toString() + "rem";
+            } else if (action === "Increase Margins") {
+                marginSize = marginSize + 1;
+                if (marginSize > 20) {
+                    marginSize = 20;
+                }
+                documentDiv.style.paddingLeft = marginSize.toString() + "rem";
+                documentDiv.style.paddingRight = marginSize.toString() + "rem";
 
-    // set textarea value to: text before caret + tab + text after caret
-    this.value = this.value.substring(0, start) +
-      //"    " + this.value.substring(end); using 4 spaces
-      "\t" + this.value.substring(end);
+            } else if (action === "Decrease Margins") {
+                marginSize = marginSize - 1;
+                if (marginSize < 0) {
+                    marginSize = 0;
+                }
+                documentDiv.style.paddingLeft = marginSize.toString() + "rem";
+                documentDiv.style.paddingRight = marginSize.toString() + "rem";
+            } else if (action === "Undo") {
+                //console.log("undo called");
+                console.log(undos);
+                if (undos.length > 1) {
+                    let thisText = undos.pop();
+                    textarea.value = thisText;
+                    updateResult();
+                } else if (undos.length === 1) { //don't go past initial entry
+                    textarea.value = undos[0];
+                    updateResult()
+                } else if (undos.length === 0) { //should never reach this case;
+                    textarea.value = "";
+                    updateResult();
+                }
 
-    // put caret at right position again
-    this.selectionStart =
-      //this.selectionEnd = start + 4; using 4 spaces
-      this.selectionEnd = start + 1;
-      updateResult();
-  }
-});
+            }
+                else if (action==="Spell Check"){
+					console.log(textarea.spellcheck);
+					textarea.spellcheck=!(textarea.spellcheck);
+					console.log(textarea.spellcheck);
+					textarea.focus();
+//textarea.blur();
+					}
+            //alert(action);
+
+            let len = textarea.value.length;
+            let start = textarea.selectionStart;
+            let end = textarea.selectionEnd;
+            let sel = textarea.value.substring(start, end);
+
+            // This is the selected text and alert it
+            //alert(sel);
+
+            let replace = sel;
+
+            if (action === "Bold") {
+                replace = '<b>' + sel + '</b>';
+            } else if (action === "Underline") {
+                replace = '<u>' + sel + '</u>';
+            } else if (action === "Italic") {
+                replace = '<em>' + sel + '</em>';
+            } else if (action === "Heading 1") {
+                replace = '<h1>' + sel + '</h1>';
+            } else if (action === "Heading 2") {
+                replace = '<h2>' + sel + '</h2>';
+            } else if (action === "Heading 3") {
+                replace = '<h3>' + sel + '</h3>';
+            } else if (action === "Heading 4") {
+                replace = '<h4>' + sel + '</h4>';
+            } else if (action === "Heading 5") {
+                replace = '<h5>' + sel + '</h5>';
+            } else if (action === "Heading 6") {
+                replace = '<h6>' + sel + '</h6>';
+            } else if (action === "Paragraph") {
+                replace = '<p>' + sel + '</p>';
+            } else if (action === "Horizontal Rule") {
+                replace = '<hr>' + sel;
+            }
+            else if (action === "Bullet") {
+                replace = '&bullet; ' + sel;
+            }
+            // Here we are replacing the selected text with this one
+            textarea.value = textarea.value.substring(0, start) + replace + textarea.value.substring(end, len);
+            updateResult();
+        }
+
+        document.getElementById('text-editor').addEventListener('keydown', function(e) {
+            //https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
+            //https://stackoverflow.com/users/819732/kasdega
+            if (e.key == 'Tab') {
+                e.preventDefault();
+                let start = this.selectionStart;
+                let end = this.selectionEnd;
+
+                // set textarea value to: text before caret + tab + text after caret
+                this.value = this.value.substring(0, start) +
+                    //"    " + this.value.substring(end); using 4 spaces
+                    "\t" + this.value.substring(end);
+
+                // put caret at right position again
+                this.selectionStart =
+                    //this.selectionEnd = start + 4; using 4 spaces
+                    this.selectionEnd = start + 1;
+                updateResult();
+            }
+        });
 
 
-function updateResult(){
-	let currentContents=document.getElementById('text-editor').value;
-	console.dir(document.getElementById('text-editor'));
-	console.log(currentContents);
-	document.getElementById('document-result').innerHTML=currentContents.replaceAll('\n','<br>');
-	}
-updateResult();
+        function updateResult() {
+            let currentContents = document.getElementById('text-editor').value;
+            console.dir(document.getElementById('text-editor'));
+            console.log(currentContents);
+            document.getElementById('document-result').innerHTML = currentContents.replaceAll('\n', '<br>');
+        }
+        updateResult();
 
-documentDiv.style.fontSize=remSize+"rem";
-documentDiv.style.paddingLeft=marginSize+"rem";
-documentDiv.style.paddingRight=marginSize+"rem";
-</script>
+        documentDiv.style.fontSize = remSize + "rem";
+        documentDiv.style.paddingLeft = marginSize + "rem";
+        documentDiv.style.paddingRight = marginSize + "rem";
+
+
+        //Script to print the content of a div
+
+        function printDiv() {
+            let a = window.open();
+            a.document.write(serializeParent());
+            a.document.close();
+            a.print();
+        }
+
+        let styleElement = document.getElementsByTagName('style')[0];
+        console.log(styleElement.innerHTML);
+
+        function serializeParent() {
+            let boilerPlate1 = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=edge'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title></title><style>";
+            let styleElementContent = document.getElementsByTagName('style')[0].innerHTML;
+            let extraStyle = "#document-result{background-color:white;}";
+            let boilerPlate2 = "</style></head><body>"
+            let boilerPlate3 = "</body></html>";
+            let s = new XMLSerializer();
+            let myElement = document.getElementById("document-parent");
+            let str = s.serializeToString(myElement);
+            let htmlPage = boilerPlate1 + styleElementContent + extraStyle + boilerPlate2 + str + boilerPlate3;
+            console.log(htmlPage);
+            return htmlPage;
+        }
+    </script>
 </body>
+
 </html>
