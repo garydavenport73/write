@@ -12,24 +12,59 @@
         }
         
         main {
+            margin-left: auto;
+            margin-right: auto;
             width: 320px;
             background-color: lightblue;
             display: flex;
             flex-direction: column;
-            align-items: center;
             padding-bottom: 20px;
+            align-items: center;
         }
         
         nav {
             width: 80%;
         }
         
+        .mono {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .serif {
+            font-family: Georgia, 'Times New Roman', Garamond, Times, serif;
+        }
+        
+        .sans {
+            font-family: Arial, Verdana, Helvetica, Tahoma, sans-serif;
+        }
+        
+        #document-settings,
+        #edit-bar {
+            width: 90%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            background-color: cadetblue;
+            border: 1px solid black;
+        }
+        
+        #file-bar {
+            width: 90%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin: 3px;
+        }
+        
         #text-editor {
             width: 90%;
+            max-width: 90%;
             overflow-wrap: break-word;
             min-height: 100px;
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin-top: 0px;
+            margin-bottom: 0px;
         }
         
         #document-parent {
@@ -65,207 +100,164 @@
                 width: 900px;
             }
         }
-        
-        @media print {
-            html,
-            body {
-                height: 99%;
-            }
-            html {
-                width: 100%;
-                padding: 0;
-                margin: 0;
-            }
-            main>* {
-                display: none;
-            }
-            main {
-                width: 100%;
-                width: 100%;
-                padding: 0;
-                margin: 0;
-            }
-            #document-parent {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: block;
-                /*border: 1px solid black;*/
-            }
-            #document-result {
-                display: block;
-                margin: 0;
-                /*border:1px solid blue;*/
-            }
-        }
     </style>
 </head>
 
 <body>
     <main id="main-write">
         <h1>Write</h1>
-        <h2>Document Settings</h2>
-        <nav>
-			<span>Fonts</span>
-            <button onclick='processSelectedText(this);'>Mono</button>
-            <button onclick='processSelectedText(this);'>Serif</button>
-            <button onclick='processSelectedText(this);'>Sans Serif</button>
-            <button onclick='processSelectedText(this);'>Increase Font</button>
-            <button onclick='processSelectedText(this);'>Decrease Font</button>
-        </nav>
-        <nav>
-			<span>Format</span>
-            <button onclick='processSelectedText(this);'>Decrease Margins</button>
-            <button onclick='processSelectedText(this);'>Increase Margins</button>
-            <button onclick='processSelectedText(this);'>Align Left</button>
-            <button onclick='processSelectedText(this);'>Align Center</button>
-            <button onclick='processSelectedText(this);'>Align Right</button>
-        </nav>
-        
-        
-        
-        <nav>Files
+        <nav id="file-bar">
+            <button onclick="newDocument();">New</button>			
             <button onclick="load();">Load</button>
             <button onclick="dataToJSON();">Save</button>
-            <!--<button onclick="serializeParent();"> Serialize Parent</button>-->
             <button onclick="saveStringToTextFile(serializeParent(),'write'+getTodaysDate(),'.html')">Export</button>
-         
-            <button onclick="printDiv();//window.print()">Print</button>
+            <button onclick="printDiv();//window.print()">&#128424;</button>
         </nav>
-
-        <textarea id="text-editor" spellcheck="false" oninput="updateResult();"><h1>My first document.</h1>
-<p>I would like thanks <em>everyone</em> who made this document possible.</p>
-If it wasn't for everyone, I would not have been able to do this</b>.
-<p>Or <u>this.</u></p>
-<hr>So let's all continue to think of the best.<hr>
-The Headings seem to work.
-<h1>Here is an H1 for example.</h1><h2>an h2</h2><h3>an h3</h3><h4>an h4</h4><h5>an h5</h5>and<h6>an h6</h6>Here is a list
-	&bullet; the first thing
-	&bullet; the second thing
-	&bullet; and the third
-	&bullet; the fourth
-	&bullet; and fifth
-
-	1) 	hello
-	2) 	again
-	3) 	and then some
-	...)
-	10) 	see what its like
-
-Well that's all,
-
-____________________
-<em>Gary Davenport</em></textarea>
-        <h2>Edit Selections</h2>
-        <nav>
-			<span>Font Style</span>
-            <button onclick='processSelectedText(this);'>Bold</button>
-            <button onclick='processSelectedText(this);'>Underline</button>
-            <button onclick='processSelectedText(this);'>Italic</button>
+        <nav id="document-settings">
+            <button class="mono" onclick='processSelectedText(this);'>Mono</button>
+            <button class="serif" onclick='processSelectedText(this);'>Serif</button>
+            <button class="sans" onclick='processSelectedText(this);'>Sans</button>
+            <button onclick='processSelectedText(this);'><sub>A</sub>A</button>
+            <button onclick='processSelectedText(this);'><sup>A</sup>A</button>
+            <button onclick='processSelectedText(this);//inc margin;'>&rarrb;&larrb;</button>
+            <button onclick='processSelectedText(this);//dec margin;'>&larrb;&rarrb;</button>
+            <button onclick='processSelectedText(this);//align left;'>&#8666;</button>
+            <button onclick='processSelectedText(this);//align center;'>&#8667;&#8666;</button>
+            <button onclick='processSelectedText(this);//align right;'>&#8667;</button>
+            <button id="spell-check" onclick='processSelectedText(this);//spellcheck;'>&check;</button>
         </nav>
-        <nav><span>Headings</span>
-            <button onclick='processSelectedText(this);'>Heading 1</button>
-            <button onclick='processSelectedText(this);'>Heading 2</button>
-            <button onclick='processSelectedText(this);'>Heading 3</button>
-            <button onclick='processSelectedText(this);'>Heading 4</button>
-            <button onclick='processSelectedText(this);'>Heading 5</button>
-            <button onclick='processSelectedText(this);'>Heading 6</button>
+        <nav id="edit-bar">
+            <button onclick='processSelectedText(this);'><b>B</b></button>
+            <button onclick='processSelectedText(this);'><u>U</u></button>
+            <button onclick='processSelectedText(this);'><em>I</em></button> &nbsp;
+            <button onclick='processSelectedText(this);//paragraph;'>&para;</button>
+            <button onclick='processSelectedText(this);'>H1</button>
+            <button onclick='processSelectedText(this);'>H2</button>
+            <button onclick='processSelectedText(this);'>H3</button> &nbsp;
+            <button onclick='processSelectedText(this);//horizontal rule'>&#8213;</button>
+            <button onclick='processSelectedText(this);//bullet;'>&bullet;</button> &nbsp;
+            <button onclick='processSelectedText(this);//undo;'>&#10226;</button>
         </nav>
-        <nav>
-            <button onclick='processSelectedText(this);'>Horizontal Rule</button>
-            <button onclick='processSelectedText(this);'>Bullet</button>
-            <button onclick='processSelectedText(this);'>Paragraph</button>
-        </nav>
-        <nav>
-            <button onclick='processSelectedText(this);'>Undo</button>
-            <button onclick='processSelectedText(this);'>Spell Check</button>     
-        </nav>
-
+        <textarea id="text-editor" spellcheck="false" oninput="updateResult();"></textarea>
         <div id="document-parent">
             <div id="document-result"></div>
         </div>
 
     </main>
     <script>
-		let baseFilename="";
+        let baseFilename = "";
         let textarea = document.getElementById("text-editor");
         let documentDiv = document.getElementById('document-result');
         let remSize = 1;
         let marginSize = 2;
+        textarea.spellcheck = false;
+        textarea.focus(); //ensures spellcheck update
         let undos = [];
         console.log("undos length", undos.length);
         undos.push(textarea.value);
         
-        function dataToJSON(){
-			updateResult();
-			data={}
-			data["text"]=textarea.value;
-			data["textAlign"]=documentDiv.style.textAlign;
-			data["fontFamily"]=documentDiv.style.fontFamily;
-			data["fontSize"]=documentDiv.style.fontSize;
-			data["marginSize"]=documentDiv.style.marginLeft;
-			data["spellCheck"]=textarea.spellcheck;
-			if (baseFilename===""){
-				baseFilename="write"+getTodaysDate();
-				};
-			let saveContents = JSON.stringify(data);
-			saveStringToTextFile(saveContents, baseFilename, ".json");
-			}
-			
-		function load(){
-			if (textarea.value!=""){
-				if (confirm("This will overwrite current document")){
-					            let fileContents = "";
-            let inputTypeIsFile = document.createElement('input');
-            inputTypeIsFile.type = "file";
-            inputTypeIsFile.accept = ".json";
-            inputTypeIsFile.addEventListener("change", function() {
-                let inputFile = inputTypeIsFile.files[0];
-                let fileReader = new FileReader();
-                fileReader.onload = function(fileLoadedEvent) {
-                    fileContents = fileLoadedEvent.target.result;
-                   
-                                   console.log(inputFile);
-				if (inputFile["name"].slice(-5)===".json"){
-					//alert("it's json!");
-					baseFilename=inputFile["name"].slice(0,-5);
-					//alert("basefilename: " + baseFilename);
-				} 
-      
-						
-					let loadedData=JSON.parse(fileContents);
-					textarea.value=loadedData["text"];
-					documentDiv.style.textAlign=loadedData["textAlign"];
-					documentDiv.style.fontFamily=loadedData["fontFamily"];
-					documentDiv.style.fontSize=loadedData["fontSize"];
-					documentDiv.style.marginLeft=loadedData["marginSize"];
-					textarea.spellcheck=loadedData["spellCheck"];
-                    updateResult();
-                    remSize = parseInt(loadedData["fontSize"].split("rem")[0]);
-					marginSize = parseInt(loadedData["marginSize"].split("rem")[0]);
-					
-					
-					
-					undos = [];
-					console.log("undos length", undos.length);
-					undos.push(textarea.value);
-           
-                };
-
-                fileReader.readAsText(inputFile, "UTF-8");
-            });
-            inputTypeIsFile.click();
-					
-					}
+        function newDocument(){
+			if (confirm("This will overwrite current document.")){
+				resetAll();
 				}
+			}
+        
+        function resetAll(){
+			//reset global variables;
+			baseFilename = "";
+			remSize=1;
+			marginSize=2;
+			
+			//reset text area value
+			textarea.value = "";
+			
+			//reapply base styles to the div
+			documentDiv.style.textAlign = "left";
+			documentDiv.style.fontFamily = "Georgia, 'Times New Roman', Garamond, Times, serif";
+			documentDiv.style.fontSize = "1rem";
+			documentDiv.style.marginLeft = "2rem";
+			textarea.spellcheck = false;
+			
+			//reset undo array
+			undos=[];
+			undos.push(textarea.value);
+			
+			//redisplay new result
+			updateResult();
+			
+			//set focus to textarea
+			textarea.focus(); //ensures spell check is refreshed
+			
+		}
+        
+        function dataToJSON() {
+            updateResult();
+            data = {}
+            data["text"] = textarea.value;
+            data["textAlign"] = documentDiv.style.textAlign;
+            data["fontFamily"] = documentDiv.style.fontFamily;
+            data["fontSize"] = documentDiv.style.fontSize;
+            data["marginSize"] = documentDiv.style.marginLeft;
+            data["spellCheck"] = textarea.spellcheck;
+            if (baseFilename === "") {
+                baseFilename = "write" + getTodaysDate();
+            };
+            let saveContents = JSON.stringify(data);
+            saveStringToTextFile(saveContents, baseFilename, ".json");
+        }
+
+        function load() {
+            if (textarea.value != "") {
+                if (confirm("This will overwrite current document")) {
+                    let fileContents = "";
+                    let inputTypeIsFile = document.createElement('input');
+                    inputTypeIsFile.type = "file";
+                    inputTypeIsFile.accept = ".json";
+                    inputTypeIsFile.addEventListener("change", function() {
+                        let inputFile = inputTypeIsFile.files[0];
+                        let fileReader = new FileReader();
+                        fileReader.onload = function(fileLoadedEvent) {
+                            fileContents = fileLoadedEvent.target.result;
+
+                            console.log(inputFile);
+                            if (inputFile["name"].slice(-5) === ".json") {
+                                //alert("it's json!");
+                                baseFilename = inputFile["name"].slice(0, -5);
+                                //alert("basefilename: " + baseFilename);
+                            }
+
+                            let loadedData = JSON.parse(fileContents);
+                            textarea.value = loadedData["text"];
+                            documentDiv.style.textAlign = loadedData["textAlign"];
+                            documentDiv.style.fontFamily = loadedData["fontFamily"];
+                            documentDiv.style.fontSize = loadedData["fontSize"];
+                            documentDiv.style.marginLeft = loadedData["marginSize"];
+                            textarea.spellcheck = loadedData["spellCheck"];
+                            updateResult();
+                            remSize = parseInt(loadedData["fontSize"].split("rem")[0]);
+                            marginSize = parseInt(loadedData["marginSize"].split("rem")[0]);
+                            undos = [];
+                            console.log("undos length", undos.length);
+                            undos.push(textarea.value);
+                            textarea.focus(); //ensures spell check is refreshed
+
+                        };
+
+                        fileReader.readAsText(inputFile, "UTF-8");
+                    });
+                    inputTypeIsFile.click();
+
+                }
+            }
 
         }
-			
-			
+
+
 
         function processSelectedText(clickedElement) {
             let action = clickedElement.innerHTML;
-            if (action != "Undo") {
+            console.log(action);
+            if (action != "⟲") {
                 if (undos.length >= 316) { //316 levels of undo
                     undos.shift();
                     undos.push(textarea.value);
@@ -274,27 +266,25 @@ ____________________
                 }
             }
 
-            if (action === "Align Left") {
+            if (action === "⇚") { //align left
                 documentDiv.style.textAlign = "left";
-            } else if (action === "Align Center") {
+            } else if (action === "⇛⇚") { //align center
                 documentDiv.style.textAlign = "center";
-            } else if (action === "Align Right") {
-                documentDiv.style.textAlign = "right";
-            } else if (action === "Align Right") {
+            } else if (action === "⇛") { //align right
                 documentDiv.style.textAlign = "right";
             } else if (action === "Mono") {
                 documentDiv.style.fontFamily = "'Courier New', Courier, monospace";
             } else if (action === "Serif") {
                 documentDiv.style.fontFamily = "Georgia, 'Times New Roman', Garamond, Times, serif";
-            } else if (action === "Sans Serif") {
+            } else if (action === "Sans") {
                 documentDiv.style.fontFamily = "Arial, Verdana, Helvetica, Tahoma, sans-serif";
-            } else if (action === "Increase Font") {
+            } else if (action === "<sub>A</sub>A") {
                 remSize = remSize + .2;
                 documentDiv.style.fontSize = remSize.toString() + "rem";
-            } else if (action === "Decrease Font") {
+            } else if (action === "<sup>A</sup>A") {
                 remSize = remSize - .2;
                 documentDiv.style.fontSize = remSize.toString() + "rem";
-            } else if (action === "Increase Margins") {
+            } else if (action === "⇥⇤") { //increase margins
                 marginSize = marginSize + 1;
                 if (marginSize > 20) {
                     marginSize = 20;
@@ -302,14 +292,14 @@ ____________________
                 documentDiv.style.marginLeft = marginSize.toString() + "rem";
                 documentDiv.style.marginRight = marginSize.toString() + "rem";
 
-            } else if (action === "Decrease Margins") {
+            } else if (action === "⇤⇥") { //decrease margins
                 marginSize = marginSize - 1;
                 if (marginSize < 0) {
                     marginSize = 0;
                 }
                 documentDiv.style.marginLeft = marginSize.toString() + "rem";
                 documentDiv.style.marginRight = marginSize.toString() + "rem";
-            } else if (action === "Undo") {
+            } else if (action === "⟲") {
                 //console.log("undo called");
                 console.log(undos);
                 if (undos.length > 1) {
@@ -324,14 +314,14 @@ ____________________
                     updateResult();
                 }
 
+            } else if (action === "✓") {
+                console.log(textarea.spellcheck);
+                textarea.spellcheck = !(textarea.spellcheck);
+                console.log(textarea.spellcheck);
+                textarea.focus();
+
+                //textarea.blur();
             }
-                else if (action==="Spell Check"){
-					console.log(textarea.spellcheck);
-					textarea.spellcheck=!(textarea.spellcheck);
-					console.log(textarea.spellcheck);
-					textarea.focus();
-//textarea.blur();
-					}
             //alert(action);
 
             let len = textarea.value.length;
@@ -344,30 +334,23 @@ ____________________
 
             let replace = sel;
 
-            if (action === "Bold") {
+            if (action === "<b>B</b>") {
                 replace = '<b>' + sel + '</b>';
-            } else if (action === "Underline") {
+            } else if (action === "<u>U</u>") {
                 replace = '<u>' + sel + '</u>';
-            } else if (action === "Italic") {
+            } else if (action === "<em>I</em>") {
                 replace = '<em>' + sel + '</em>';
-            } else if (action === "Heading 1") {
+            } else if (action === "H1") {
                 replace = '<h1>' + sel + '</h1>';
-            } else if (action === "Heading 2") {
+            } else if (action === "H2") {
                 replace = '<h2>' + sel + '</h2>';
-            } else if (action === "Heading 3") {
+            } else if (action === "H3") {
                 replace = '<h3>' + sel + '</h3>';
-            } else if (action === "Heading 4") {
-                replace = '<h4>' + sel + '</h4>';
-            } else if (action === "Heading 5") {
-                replace = '<h5>' + sel + '</h5>';
-            } else if (action === "Heading 6") {
-                replace = '<h6>' + sel + '</h6>';
-            } else if (action === "Paragraph") {
+            } else if (action === "¶") {
                 replace = '<p>' + sel + '</p>';
-            } else if (action === "Horizontal Rule") {
+            } else if (action === "―") {
                 replace = '<hr>' + sel;
-            }
-            else if (action === "Bullet") {
+            } else if (action === "•") {
                 replace = '&bullet; ' + sel;
             }
             // Here we are replacing the selected text with this one
@@ -402,13 +385,17 @@ ____________________
             console.dir(document.getElementById('text-editor'));
             //console.log(currentContents);
             document.getElementById('document-result').innerHTML = currentContents.replaceAll('\n', '<br>');
+            if (textarea.spellcheck === true) {
+                document.getElementById("spell-check").style.color = "green";
+            } else {
+                document.getElementById("spell-check").style.color = "red";
+            }
         }
         updateResult();
 
         documentDiv.style.fontSize = remSize + "rem";
         documentDiv.style.marginLeft = marginSize + "rem";
         documentDiv.style.marginRight = marginSize + "rem";
-
 
         //Script to print the content of a div
 
@@ -435,11 +422,9 @@ ____________________
             console.log(htmlPage);
             return htmlPage;
         }
-        
 
-        
-        		////////////////////////////////////////////
-		//Save related functions, often used with date functions below
+        ////////////////////////////////////////////
+        //Save related functions, often used with date functions below
         function save() {
             let basename = "write" + getTodaysDate();
             saveStringToTextFile(str, basename, ".txt");
@@ -495,7 +480,7 @@ ____________________
             thisYear = thisDate.getYear();
             return daysInSomeMonth(thisMonth, thisYear);
         }
-        
+
         /////////////////////////////////////////////////
     </script>
 </body>
