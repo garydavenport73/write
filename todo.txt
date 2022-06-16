@@ -1,0 +1,5 @@
+make things a little Rounder, match to other apps.
+Prevent closing without asking.
+switch smaller and bigger font buttons.
+Copy html document to clipboard button needed.
+html needs to be colored.
