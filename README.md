@@ -24,7 +24,9 @@ If the notes program is not enough this provides for basic word processing.  It 
 * Take selection and make it a paragraph or header.
 * Insert bullets or horizontal line dividers.
 * Undo a mistake (there are 316 levels of undo).
-
+### Mobile:
 ![screenshot](screenshot1.png)
+### Tablet:
 ![screenshot](screenshot2.png)
+### Laptop:
 ![screenshot](screenshot3.png)
