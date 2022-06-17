@@ -133,15 +133,15 @@
             <button onclick="newDocument();">New</button>			
             <button onclick="load();">Load</button>
             <button onclick="dataToJSON();">Save</button>
-            <button onclick="saveStringToTextFile(serializeParent(),'write'+getTodaysDate(),'.html')">Export</button>
-            <button onclick="printDiv();//window.print()">&#128424;</button>
+            <button onclick="exportToHTML()">Export</button>
+            <button onclick="printDiv('document-parent');//window.print()">&#128424;</button>
         </nav>
         <nav id="document-settings">
             <button class="mono" onclick='processSelectedText(this);'>Mono</button>
             <button class="serif" onclick='processSelectedText(this);'>Serif</button>
             <button class="sans" onclick='processSelectedText(this);'>Sans</button>
-            <button onclick='processSelectedText(this);'><sub>A</sub>A</button>
-            <button onclick='processSelectedText(this);'><sup>A</sup>A</button>
+            <button onclick='processSelectedText(this);//decrease font'><sup>A</sup>A</button>
+            <button onclick='processSelectedText(this);//increase font;'><sub>A</sub>A</button>
             <button onclick='processSelectedText(this);//inc margin;'>&rarrb;&larrb;</button>
             <button onclick='processSelectedText(this);//dec margin;'>&larrb;&rarrb;</button>
             <button onclick='processSelectedText(this);//align left;'>&#8666;</button>
@@ -178,6 +178,32 @@
         let undos = [];
         console.log("undos length", undos.length);
         undos.push(textarea.value);
+        
+
+        function exportToHTML(){
+			let contents = serializeElementToPage("document-parent","html,#document-result,#document-parent{background-color:white;}");
+			copyToClipBoard(contents);
+			if (confirm("HTML document exported to clipboard.\n\nWould you like to export to HTML file?")){
+				saveStringToTextFile(contents,'write'+getTodaysDate(),'.html');
+				}
+			}
+			
+        function copyToClipBoard(str) {
+            //https://techoverflow.net/2018/03/30/copying-strings-to-the-clipboard-using-pure-javascript/
+            let el = document.createElement('textarea');
+            el.value = str;
+            el.setAttribute('readonly', '');
+            el.style = {
+                position: 'absolute',
+                left: '-9999px'
+            };
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            //alert('Copied to Clipboard.');
+            return (str);
+        }
         
         function newDocument(){
 			if (confirm("This will overwrite current document.")){
@@ -422,24 +448,28 @@
 
         //Script to print the content of a div
 
-        function printDiv() {
+        function printDiv(id) {
             let a = window.open();
-            a.document.write(serializeParent());
+            a.document.write(serializeElementToPage(id,"html,#document-result,#document-parent{background-color:white;}"));
             a.document.close();
             a.print();
         }
 
-        let styleElement = document.getElementsByTagName('style')[0];
-        //console.log(styleElement.innerHTML);
-
-        function serializeParent() {
+        function serializeElementToPage(id, extraStyle = "") {
             let boilerPlate1 = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=edge'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title></title><style>";
-            let styleElementContent = document.getElementsByTagName('style')[0].innerHTML;
-            let extraStyle = "#document-result,#document-parent{background-color:white;}";
+            
+            let allStyleTags = document.getElementsByTagName('style');
+            
+            let styleElementContent="";
+            for (let i = 0; i < allStyleTags.length; i++){
+				styleElementContent = allStyleTags[i].innerHTML;
+				}
+            //let styleElementContent = document.getElementsByTagName('style')[0].innerHTML;
+            //let extraStyle = "html,#document-result,#document-parent{background-color:white;}";
             let boilerPlate2 = "</style></head><body>"
             let boilerPlate3 = "</body></html>";
             let s = new XMLSerializer();
-            let myElement = document.getElementById("document-parent");
+            let myElement = document.getElementById(id);
             let str = s.serializeToString(myElement);
             let htmlPage = boilerPlate1 + styleElementContent + extraStyle + boilerPlate2 + str + boilerPlate3;
             console.log(htmlPage);
@@ -505,6 +535,18 @@
         }
 
         /////////////////////////////////////////////////
+        ////Asks if you really want to close browser
+
+        window.onbeforeunload = askConfirm;
+        let needsSave = true;
+
+        function askConfirm() {
+            if (needsSave === true) {
+                return "Did you remember to save your data?";
+            } else {
+                return;
+            }
+        }
     </script>
 </body>
 
