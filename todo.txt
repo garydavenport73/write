@@ -1,5 +1,0 @@
-X make things a little Rounder, match to other apps. -> Done
-X Prevent closing without asking.
-X switch smaller and bigger font buttons.
-X Copy html document to clipboard button needed.
-X html needs to be colored.
